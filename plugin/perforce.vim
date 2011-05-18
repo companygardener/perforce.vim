@@ -337,7 +337,7 @@ function s:P4OpenFileForEditDefaultChangelist()
     let action = "edit"
   endif
 
-  call s:P4SchellCommandCurrentBuffer( action )
+  call s:P4ShellCommandCurrentBuffer( action )
   if v:errmsg != ""
     echoerr "Unable to open file for " action . ". " . v:errmsg
     return
