@@ -29,9 +29,9 @@ augroup perforce
 
   " Keyboard shortcuts - default <Leader> is \
   map <silent> <Leader>44 :echo <SID>P4GetInfo()<CR>
-  map <silent> <Leader>4a :echo <SID>P4AddFile()<CR>
-  map <silent> <Leader>4b :echo <SID>P4AnnotateFile()<CR>
-  map <silent> <Leader>4e :call <SID>P4OpenFileForEdit()<CR>
+  map <silent> <Leader>4a :echo <SID>P4AnnotateFile()<CR>
+  map <silent> <Leader>4e :call <SID>P4OpenFileForEditDefaultChangelist()<CR>
+  map <silent> <Leader>4E :call <SID>P4OpenFileForEdit()<CR>
   map <silent> <Leader>4r :call <SID>P4RevertFile()<CR>
   map <silent> <Leader>4i :echo <SID>P4GetFileStatus()<CR>
   map <silent> <Leader>4s :echo <SID>P4GetFileStatus()<CR> " For backward compatibility
@@ -178,15 +178,6 @@ function s:P4RevertFile()
 endfunction
 
 "----------------------------------------------------------------------------
-" Open a file
-"----------------------------------------------------------------------------
-function s:P4AddFile()
-  let p = s:P4ShellCommandCurrentBuffer( "add" )
-  return p
-endfunction
-
-
-"----------------------------------------------------------------------------
 " Diff a file, with more checking than just wrapping the command
 "----------------------------------------------------------------------------
 function s:P4DiffFile()
@@ -323,6 +314,36 @@ function s:P4OpenFileForEditWithPrompt()
   let action=confirm("File is read only.  p4 Edit the file?" ,"&Yes\n&No", 1, "Question")
   if action == 1
     call s:P4OpenFileForEdit()
+  endif
+endfunction
+
+"----------------------------------------------------------------------------
+" Open a file for editing in the default changelist
+"----------------------------------------------------------------------------
+
+function s:P4OpenFileForEditDefaultChangelist()
+  if filewritable(expand( "%:p" ) ) == 0
+    if s:P4IsCurrent() != 0
+      let sync = confirm("You do not have the head revision. p4 sync the file before opening?", "&Yes\n&No", 1, "Question")
+      if sync == 1
+        call s:P4SchellCommandCurrentBuffer( "sync" )
+      endif
+    endif
+  endif
+
+  if (b:headrev == "" || b:action == "add")
+    let action = "add"
+  else
+    let action = "edit"
+  endif
+
+  call s:P4SchellCommandCurrentBuffer( action )
+  if v:errmsg != ""
+    echoerr "Unable to open file for " action . ". " . v:errmsg
+    return
+  else
+    e!
+    call s:P4RestoreLastPosition()
   endif
 endfunction
 
@@ -740,7 +761,8 @@ function s:P4Help()
   \ "l - Login\n" .
   \ "<Leader> - Perforce info\n" .
   \ "\nCurrent File commands:\n" .
-  \ "e - Edit/add file to a changelist\n" .
+  \ "e - Edit/add file to default changelist\n"
+  \ "E - Edit/add file to a changelist\n" .
   \ "x - Mark file to changelist for deletion\n" .
   \ "r - Revert file\n" .
   \ "i - Get file info\n" .
