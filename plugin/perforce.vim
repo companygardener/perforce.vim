@@ -326,7 +326,7 @@ function s:P4OpenFileForEditDefaultChangelist()
     if s:P4IsCurrent() != 0
       let sync = confirm("You do not have the head revision. p4 sync the file before opening?", "&Yes\n&No", 1, "Question")
       if sync == 1
-        call s:P4SchellCommandCurrentBuffer( "sync" )
+        call s:P4ShellCommandCurrentBuffer( "sync" )
       endif
     endif
   endif
