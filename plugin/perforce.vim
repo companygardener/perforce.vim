@@ -363,7 +363,7 @@ endfunction
 " Print annotated version of file
 "----------------------------------------------------------------------------
 function s:P4AnnotateFile()
-  let p = s:P4ShellCommandCurrentBuffer( "annotate -i -q -db")
+  let p = s:P4ShellCommandCurrentBuffer( "annotate -i -q -db -dw")
   return p
 endfunction
 
