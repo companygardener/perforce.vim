@@ -15,7 +15,7 @@
 
 " Standard code to avoid loading twice and to allow not loading
 if exists("loaded_perforce")
-   finish
+  finish
 endif
 let loaded_perforce=1
 
