@@ -28,8 +28,9 @@ augroup perforce
   autocmd BufRead * call <SID>P4GetFileStatus()
 
   " Keyboard shortcuts - default <Leader> is \
-  map <silent> <Leader>4I :echo <SID>P4GetInfo()<CR>
-  map <silent> <Leader>4a :echo <SID>P4AnnotateFile()<CR>
+  map <silent> <Leader>44 :echo <SID>P4GetInfo()<CR>
+  map <silent> <Leader>4a :echo <SID>P4AddFile()<CR>
+  map <silent> <Leader>4b :echo <SID>P4AnnotateFile()<CR>
   map <silent> <Leader>4e :call <SID>P4OpenFileForEdit()<CR>
   map <silent> <Leader>4r :call <SID>P4RevertFile()<CR>
   map <silent> <Leader>4i :echo <SID>P4GetFileStatus()<CR>
@@ -64,6 +65,7 @@ augroup perforce
   menu <silent> &Perforce.List\ file\ &versions :echo <SID>P4VersionsFile()<CR>
   menu <silent> &Perforce.&Diff :echo <SID>P4DiffFile()<CR>
   menu <silent> &Perforce.&Unified diff :echo <SID>P4UDiffFile()<CR>
+  menu <silent> &Perforce.&Add :call <SID>P4AddFile()<CR>
   menu <silent> &Perforce.&Edit :call <SID>P4OpenFileForEdit()<CR>
   menu <silent> &Perforce.Mark\ file\ for\ deletion :call <SID>P4OpenFileForDeletion()<CR>
   menu <silent> &Perforce.&Revert :call <SID>P4RevertFile()<CR>
@@ -174,6 +176,15 @@ function s:P4RevertFile()
     " Cancel (or any other result), don't do the edit
   endif
 endfunction
+
+"----------------------------------------------------------------------------
+" Open a file
+"----------------------------------------------------------------------------
+function s:P4AddFile()
+  let p = s:P4ShellCommandCurrentBuffer( "add" )
+  return p
+endfunction
+
 
 "----------------------------------------------------------------------------
 " Diff a file, with more checking than just wrapping the command
