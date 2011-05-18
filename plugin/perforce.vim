@@ -337,7 +337,7 @@ function s:P4OpenFileForEditDefaultChangelist()
     let action = "edit"
   endif
 
-  let msg = call s:P4ShellCommandCurrentBuffer( action )
+  let msg = s:P4ShellCommandCurrentBuffer( action )
   if v:errmsg != ""
     echoerr "Unable to open file for " action . ". " . v:errmsg
     return
@@ -419,7 +419,7 @@ endfunction
 "----------------------------------------------------------------------------
 function P4RulerStatus()
   if !exists( "b:headrev" )
-      call s:P4InitialBufferVariables()
+    call s:P4InitialBufferVariables()
   endif
   if b:action == ""
     if b:headrev == ""
