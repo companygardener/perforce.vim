@@ -162,12 +162,13 @@ function s:P4RevertFile()
   let action=confirm("p4 Revert this file and lose any changes?" ,"&Yes\n&No", 2, "Question")
   if action == 1
     if s:P4Action() != ""
-      call s:P4ShellCommandCurrentBuffer( "revert" )
+      let msg = s:P4ShellCommandCurrentBuffer( "revert" )
       if v:errmsg != ""
         echoerr "Unable to revert file. " . v:errmsg
         return
       else
         e!
+        echomsg msg
         call s:P4RestoreLastPosition()
       endif
     endif
@@ -288,12 +289,13 @@ function s:P4SyncFile()
   let action=confirm("p4 sync this file and lose any changes?" ,"&Yes\n&No", 2, "Question")
   if action == 1
     if s:P4Action() == ""
-      call s:P4ShellCommandCurrentBuffer( "sync" )
+      let msg = s:P4ShellCommandCurrentBuffer( "sync" )
       if v:errmsg != ""
         echoerr "Unable to sync file. " . v:errmsg
         return
       else
         e!
+        echomsg msg
       endif
     else
       echoerr "File is already opened: cannot sync."
@@ -371,12 +373,13 @@ function s:P4OpenFileForEdit()
     echomsg "No changelist specified. Edit cancelled."
     return
   endif
-  call s:P4ShellCommandCurrentBuffer( action . " -c " . listnum )
+  let msg = s:P4ShellCommandCurrentBuffer( action . " -c " . listnum )
   if v:errmsg != ""
     echoerr "Unable to open file for " action . ". " . v:errmsg
     return
   else
     e!
+    echomsg msg
     call s:P4RestoreLastPosition()
   endif
 endfunction
@@ -385,8 +388,8 @@ endfunction
 " Print annotated version of file
 "----------------------------------------------------------------------------
 function s:P4AnnotateFile()
-  let p = s:P4ShellCommandCurrentBuffer( "annotate -i -q -db -dw")
-  return p
+  let msg = s:P4ShellCommandCurrentBuffer( "annotate -i -q -db -dw")
+  return msg
 endfunction
 
 "----------------------------------------------------------------------------
@@ -401,12 +404,13 @@ function s:P4OpenFileForDeletion()
       echomsg "No changelist specified. Delete cancelled."
       return
     endif
-    call s:P4ShellCommandCurrentBuffer( "delete -c " . listnum )
+    msg = s:P4ShellCommandCurrentBuffer( "delete -c " . listnum )
     if v:errmsg != ""
       echoerr "Unable to mark file for deletion. " . v:errmsg
       return
     else
       e!
+      echomsg msg
       call s:P4RestoreLastPosition()
     endif
   else
@@ -762,7 +766,7 @@ function s:P4Help()
   \ "l - Login\n" .
   \ "<Leader> - Perforce info\n" .
   \ "\nCurrent File commands:\n" .
-  \ "e - Edit/add file to default changelist\n"
+  \ "e - Edit/add file to default changelist\n" .
   \ "E - Edit/add file to a changelist\n" .
   \ "x - Mark file to changelist for deletion\n" .
   \ "r - Revert file\n" .
